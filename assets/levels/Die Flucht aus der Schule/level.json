@@ -1,0 +1,33 @@
+[
+  "Die Flucht aus der Schule",
+  2,
+  [
+    [
+      "ERZÄHLER: Nun bist du in der Schule, der meistgehasste\nOrt eines jeden Schülers.",
+      "ERZÄHLER: Montags in der ersten Stunde hast du Französisch\nbei Madame Andeatea, also musst du, wenn du Brutus\nretten willst, erstmal irgendwie an ihr vorbeikommen.",
+      "MADAME ANDEATEA: Allo Marrrcüs! Warrrüm bist dü noch nischt\nim Klossenzimmerrr?",
+      "MARCUS AURELIUS: Es tut mir leid, ich bin ein bischen zu\nspät aufgestanden...",
+      "MADAMA ANDEATEA: Dos geht gorrr nischt! Wenn das sö\nweiterrrläuft, bloibst dü sitzenne!",
+      "MARCUS AURELIUS: Aber...",
+      "MADAME ANDEAETA: SILOS SI VU PLÄ! Komm jetzt! Oder soll\nisch dirrr noch oine Sechs verrrpassenne?",
+      "MARCUS AURELIUS: Nein! Ich muss meinen Freund Brutus vor\ndem brutalen Unrechtsregime in Brutalien retten.\nUnd wenn Sie mir dabei im Weg stehen, muss ich Sie\nleider zerstören.",
+      "MADAME ANDEATEA: Na worrrte!"
+    ],
+    [
+      "ERZÄHLER: Oh nein, Ebert Strebert hat dich gesehen!\nEr ist der nervigste Typ aus der ganzen Schule.",
+      "EBERT STREBERT: Marcus, was tust du da?",
+      "MARCUS AURELIUS: Ich geh weg.",
+      "EBERT: Wohin?",
+      "MARCUS: Nach Brutalien. Ich muss Brutus retten.\nEr ist dort Gefangener.",
+      "EBERT: Du weißt aber schon, dass in Brutalien ein\nbrutales Unrechtsregime an der Macht ist? Das ist sehr\ngefährlich!",
+      "MARCUS: Das ist mir egal. Ich muss Brutus retten!",
+      "EBERT: Außerdem wirst du den tollen Deutschunterricht\nvon Frau Rizzler verpassen...",
+      "MARCUS: Halt dein fresse Ebert und jetzt lass mich durch!",
+      "EBERT: Das ist aber kein schönes Deutsch, lieber Marcus!\n'Fresse' ist Femininum und nicht Maskulinum, und es\nwird außerdem groß geschrieben!",
+      "MARCUS: Vielen Dank Herr Deutschlehrer! Daran werde ich\ndenken, wenn ich mir deine Grammatikregeln das nächste\nMal den Arsch hochschiebe.",
+      "EBERT: Außerdem wirst du die ganzen wunderbaren\nFranzösischstunden bei Madame Andeatea verpassen! Übrigens,\nhast du eigentlich die Vokabeln abgeschrieben? Die werden\nja heute kontrolliert, wie du weißt...",
+      "MARCUS: Jetzt reicht's!"
+    ]
+  ],
+  [true, true]
+]
