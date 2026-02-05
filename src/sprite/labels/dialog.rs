@@ -6,22 +6,6 @@ use crate::sprite::{
 };
 use macroquad::prelude::*;
 
-fn draw_text_dialog(text: &str) {
-    let lines: Vec<&str> = text.split('\n').collect();
-    let font_size = 30.0;
-    let line_spacing = 0.0;
-    let y_pos = 270.0;
-
-    let block_height = lines.len() as f32 * (font_size + line_spacing) - line_spacing;
-
-    for (i, line) in lines.iter().enumerate() {
-        let x = get_centered_text_x(line, font_size);
-        let y =
-            (screen_height() - block_height) / 2.0 + i as f32 * (font_size + line_spacing) + y_pos;
-        draw_text_outline(line, x, y, font_size, 2.0, WHITE, BLACK);
-    }
-}
-
 #[derive(Debug)]
 pub struct DialogLabel {
     pub text: String,
@@ -43,6 +27,22 @@ impl DialogLabel {
     pub fn reset(&mut self) {
         self.current_letters = 0;
         self.letter_timer = 0.0;
+    }
+
+    pub fn draw_text_dialog(text: &str) {
+        let lines: Vec<&str> = text.split('\n').collect();
+        let font_size = 30.0;
+        let line_spacing = 0.0;
+        let y_pos = 270.0;
+
+        let block_height = lines.len() as f32 * (font_size + line_spacing) - line_spacing;
+
+        for (i, line) in lines.iter().enumerate() {
+            let x = get_centered_text_x(line, font_size);
+            let y =
+                (screen_height() - block_height) / 2.0 + i as f32 * (font_size + line_spacing) + y_pos;
+            draw_text_outline(line, x, y, font_size, 2.0, WHITE, BLACK);
+        }
     }
 }
 
@@ -81,7 +81,7 @@ impl Drawable for DialogLabel {
                 .map(|(i, _)| i)
                 .unwrap_or(gd.gs.labels.dialog.current_letters);
 
-            draw_text_dialog(&gd.gs.labels.dialog.text[0..end]);
+            DialogLabel::draw_text_dialog(&gd.gs.labels.dialog.text[0..end]);
         }
     }
 }
