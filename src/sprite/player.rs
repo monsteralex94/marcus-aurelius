@@ -8,7 +8,7 @@ use macroquad::prelude::*;
 
 #[repr(usize)]
 #[derive(Debug, Copy, Clone)]
-pub enum MarcusMovementFrame {
+enum MarcusMovementFrame {
     Left = 1,
     Right = 2,
 }

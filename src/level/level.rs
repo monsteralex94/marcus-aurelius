@@ -3,7 +3,7 @@ use std::{error::Error, fs};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct LevelData {
+struct LevelData {
     pub name: String,
     pub num_stages: usize,
     pub dialog: Vec<Vec<String>>,

@@ -4,9 +4,8 @@ use crate::level::level::LevelGroupData;
 use crate::scenes::Scene;
 use crate::sprite::labels::PlayerHealthLabel;
 use crate::sprite::{
-    background::Background,
+    Background, Player,
     labels::{DialogLabel, LevelLabel},
-    player::Player,
     traits::{Drawable, Updatable},
 };
 use macroquad::prelude::*;

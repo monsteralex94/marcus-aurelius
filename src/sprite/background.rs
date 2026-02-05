@@ -1,12 +1,12 @@
 use crate::game_data::GameData;
-use crate::level::level::LevelGroupData;
+use crate::level::LevelGroupData;
 use crate::sprite::traits::{Drawable, Updatable};
 use std::error::Error;
 
 use macroquad::prelude::*;
 
 #[derive(Debug)]
-pub struct SingleBackground {
+struct SingleBackground {
     texture: Texture2D,
 }
 
