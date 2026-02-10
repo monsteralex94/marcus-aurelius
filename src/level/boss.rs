@@ -2,6 +2,14 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 enum BossActions {
+    Move {
+        x: f32,
+        y: f32, // interesting physics
+        duration: f32,
+    },
+    Jump {
+        power: f32,
+    },
     Wait {
         time: f32,
     },
