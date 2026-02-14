@@ -1,12 +1,13 @@
 use crate::GameData;
-use crate::sprite::labels::{DialogLabel, LevelLabel, PlayerHealthLabel};
+use crate::sprite::labels::{BossHealthLabel, DialogLabel, LevelLabel, PlayerHealthLabel};
 use crate::sprite::traits::{Drawable, Updatable};
 
 #[derive(Debug)]
 pub struct Labels {
     pub dialog: DialogLabel,
     pub level: LevelLabel,
-    pub health: PlayerHealthLabel,
+    pub player_health: PlayerHealthLabel,
+    pub boss_health: BossHealthLabel,
 }
 
 impl Labels {
@@ -14,7 +15,8 @@ impl Labels {
         Labels {
             dialog: DialogLabel::new(),
             level: LevelLabel::new(),
-            health: PlayerHealthLabel::new(),
+            player_health: PlayerHealthLabel::new(),
+            boss_health: BossHealthLabel::new(),
         }
     }
 }
@@ -24,6 +26,7 @@ impl Updatable for Labels {
         DialogLabel::update(gd);
         LevelLabel::update(gd);
         PlayerHealthLabel::update(gd);
+        BossHealthLabel::update(gd);
     }
 }
 
@@ -32,5 +35,6 @@ impl Drawable for Labels {
         DialogLabel::draw(gd);
         LevelLabel::draw(gd);
         PlayerHealthLabel::draw(gd);
+        BossHealthLabel::draw(gd);
     }
 }
