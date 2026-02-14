@@ -20,6 +20,10 @@ impl LevelLabel {
 
 impl Updatable for LevelLabel {
     fn update(gd: &mut GameData) {
+        if gd.agd.current_level >= gd.lgd.levels.len() {
+            return;
+        }
+
         gd.gs.labels.level.text = format!(
             "Level {}: '{}'",
             gd.agd.current_level + 1,

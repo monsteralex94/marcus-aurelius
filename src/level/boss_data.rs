@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-enum BossActions {
+#[derive(Debug, Serialize, Deserialize)]
+pub enum BossAction {
     Move {
         x: f32,
         y: f32, // interesting physics
@@ -28,11 +28,15 @@ enum BossActions {
     },
 }
 
-#[derive(Serialize, Deserialize)]
-struct Boss {
-    at_start: Vec<BossActions>,
-    always: Vec<BossActions>,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BossActionSet {
+    pub at_start: Vec<BossAction>,
+    pub always: Vec<BossAction>,
+    pub when_hit: Vec<Vec<BossAction>>, // When hit with a certain power
+}
 
-    // When hit with a certain power
-    when_hit: Vec<Vec<BossActions>>,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BossData {
+    pub texture_name: String,
+    pub action_set: BossActionSet,
 }

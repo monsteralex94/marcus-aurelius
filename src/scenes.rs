@@ -1,5 +1,8 @@
+use std::error::Error;
+
 use crate::game_data::{GameData, GameSprites};
 use crate::sprite::{
+    Boss,
     labels::text::*,
     traits::{Drawable, Updatable},
 };
@@ -13,24 +16,34 @@ pub enum Scene {
     Exit,
 }
 
-pub fn playing(gd: &mut GameData) {
-    if gd.agd.current_level > gd.lgd.num_levels - 1 {
+pub async fn playing(gd: &mut GameData) -> Result<(), Box<dyn Error>> {
+    GameSprites::update(gd);
+
+    if gd.agd.current_level >= gd.lgd.num_levels {
         dbg!("Congratulations, you finished the game!");
         gd.agd.current_scene = Scene::Exit;
-        return;
+        return Ok(());
     }
 
     if gd.level_completed() {
         gd.agd.current_scene = Scene::LevelCompleted;
-        return;
+        return Ok(());
     }
 
+    //Labels::update(gd);
+
+    if gd.agd.just_changed_stage {
+        gd.gs.boss = Boss::new(&gd.lgd, gd.agd.current_level, gd.agd.current_stage).await?;
+    }
+
+    gd.agd.just_changed_stage = false;
     gd.agd.controls_on = !gd.in_dialog();
     gd.agd.dt = get_frame_time();
 
-    GameSprites::update(gd);
     clear_background(GREEN);
     GameSprites::draw(gd);
+
+    Ok(())
 }
 
 pub fn level_completed(gd: &mut GameData) {

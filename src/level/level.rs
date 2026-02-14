@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::{error::Error, fs};
 
-use serde::{Deserialize, Serialize};
+use crate::level::boss_data::*;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LevelData {
@@ -8,6 +9,7 @@ pub struct LevelData {
     pub num_stages: usize,
     pub dialog: Vec<Vec<String>>,
     pub access_next: Vec<bool>,
+    pub boss_data: Vec<Option<BossData>>,
 }
 
 impl LevelData {
@@ -16,11 +18,6 @@ impl LevelData {
         let level: LevelData = serde_json::from_str(&data)?;
         Ok(level)
     }
-}
-
-#[derive(Serialize, Deserialize)]
-struct LevelPaths {
-    level_paths: Vec<String>,
 }
 
 #[derive(Debug)]
@@ -33,12 +30,12 @@ pub struct LevelGroupData {
 impl LevelGroupData {
     pub fn new(directory: &str) -> Result<LevelGroupData, Box<dyn Error>> {
         let data = fs::read_to_string(format!("{}/levels.json", directory))?;
-        let level_paths: LevelPaths = serde_json::from_str(&data)?;
+        let level_names: Vec<String> = serde_json::from_str(&data)?;
         let mut levels: Vec<LevelData> = Vec::new();
 
-        for level_path in &level_paths.level_paths {
+        for level_name in &level_names {
             levels.push(LevelData::new(
-                format!("{}/{}/level.json", directory, level_path).as_str(),
+                format!("{}/{}/level.json", directory, level_name).as_str(),
             )?);
         }
 

@@ -1,11 +1,9 @@
 use std::error::Error;
 
-use crate::level::level::LevelGroupData;
+use crate::level::LevelGroupData;
 use crate::scenes::Scene;
-use crate::sprite::labels::PlayerHealthLabel;
 use crate::sprite::{
-    Background, Player,
-    labels::{DialogLabel, LevelLabel},
+    Background, Boss, Labels, Player,
     traits::{Drawable, Updatable},
 };
 use macroquad::prelude::*;
@@ -17,6 +15,7 @@ pub struct ActiveGameData {
     pub current_stage: usize,
     pub current_dialog: usize,
     pub controls_on: bool,
+    pub just_changed_stage: bool,
     pub dt: f32,
 }
 
@@ -28,6 +27,7 @@ impl ActiveGameData {
             current_stage: 0,
             current_dialog: 0,
             controls_on: true,
+            just_changed_stage: true,
             dt: 0.0,
         }
     }
@@ -38,39 +38,7 @@ impl ActiveGameData {
         self.current_stage = 0;
         self.current_dialog = 0;
         self.controls_on = true;
-    }
-}
-
-#[derive(Debug)]
-pub struct Labels {
-    pub dialog: DialogLabel,
-    pub level: LevelLabel,
-    pub health: PlayerHealthLabel,
-}
-
-impl Labels {
-    pub fn new() -> Labels {
-        Labels {
-            dialog: DialogLabel::new(),
-            level: LevelLabel::new(),
-            health: PlayerHealthLabel::new(),
-        }
-    }
-}
-
-impl Updatable for Labels {
-    fn update(gd: &mut GameData) {
-        DialogLabel::update(gd);
-        LevelLabel::update(gd);
-        PlayerHealthLabel::update(gd);
-    }
-}
-
-impl Drawable for Labels {
-    fn draw(gd: &GameData) {
-        DialogLabel::draw(gd);
-        LevelLabel::draw(gd);
-        PlayerHealthLabel::draw(gd);
+        self.just_changed_stage = true;
     }
 }
 
@@ -78,6 +46,7 @@ impl Drawable for Labels {
 pub struct GameSprites {
     pub background: Background,
     pub player: Player,
+    pub boss: Option<Boss>,
     pub labels: Labels,
 }
 
@@ -85,6 +54,7 @@ impl Updatable for GameSprites {
     fn update(gd: &mut GameData) {
         Background::update(gd);
         Player::update(gd);
+        Boss::update(gd);
         Labels::update(gd);
     }
 }
@@ -93,6 +63,7 @@ impl Drawable for GameSprites {
     fn draw(gd: &GameData) {
         Background::draw(gd);
         Player::draw(gd);
+        Boss::draw(gd);
         Labels::draw(gd);
     }
 }
@@ -116,6 +87,7 @@ impl GameData {
             gs: GameSprites {
                 background: Background::new(&lgd_2).await?,
                 player: Player::new().await?,
+                boss: Boss::new(&lgd_2, 0, 0).await?,
                 labels: Labels::new(),
             },
         })
@@ -126,6 +98,12 @@ impl GameData {
     }
 
     pub fn get_dialog_len(&self) -> usize {
+        if self.agd.current_level >= self.lgd.levels.len() {
+            return 0;
+        } else if self.agd.current_stage >= self.lgd.levels[self.agd.current_level].dialog.len() {
+            return 0;
+        }
+
         self.lgd.levels[self.agd.current_level].dialog[self.agd.current_stage].len()
     }
 

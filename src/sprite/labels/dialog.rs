@@ -39,8 +39,9 @@ impl DialogLabel {
 
         for (i, line) in lines.iter().enumerate() {
             let x = get_centered_text_x(line, font_size);
-            let y =
-                (screen_height() - block_height) / 2.0 + i as f32 * (font_size + line_spacing) + y_pos;
+            let y = (screen_height() - block_height) / 2.0
+                + i as f32 * (font_size + line_spacing)
+                + y_pos;
             draw_text_outline(line, x, y, font_size, 2.0, WHITE, BLACK);
         }
     }
@@ -48,8 +49,8 @@ impl DialogLabel {
 
 impl Updatable for DialogLabel {
     fn update(gd: &mut GameData) {
-        if !gd.level_completed() {
-            if gd.in_dialog() && is_key_pressed(KeyCode::N) {
+        if gd.in_dialog() {
+            if is_key_pressed(KeyCode::N) {
                 gd.agd.current_dialog += 1;
                 gd.gs.labels.dialog.reset();
             }

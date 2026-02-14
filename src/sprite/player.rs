@@ -6,19 +6,12 @@ use std::error::Error;
 
 use macroquad::prelude::*;
 
-#[repr(usize)]
-#[derive(Debug, Copy, Clone)]
-pub enum MarcusMovementFrame {
-    Left = 1,
-    Right = 2,
-}
-
 #[derive(Debug)]
 pub struct Player {
     pub texture: Texture2D,
     pub frames: Vec<Rect>,
-    pub current_frame: MarcusMovementFrame,
-    pub switch_frame_time: f32,
+    pub current_frame: usize,
+    pub switch_frame_timer: f32,
     pub pos: Vec2,
     pub moving: bool,
     pub facing_left: bool,
@@ -39,8 +32,8 @@ impl Player {
                 Rect::new(32.0, 0.0, 32.0, 32.0),
                 Rect::new(0.0, 32.0, 32.0, 32.0),
             ],
-            current_frame: MarcusMovementFrame::Left,
-            switch_frame_time: 0.0,
+            current_frame: 0,
+            switch_frame_timer: 0.0,
             pos: vec2(0.0, GROUND),
             moving: false,
             facing_left: false,
@@ -54,15 +47,10 @@ impl Player {
 impl Updatable for Player {
     fn update(gd: &mut GameData) {
         if gd.gs.player.pos.x < -UNIT_SIZE {
-            if gd.agd.current_stage > 0 {
-                gd.agd.current_stage -= 1;
-                gd.agd.current_dialog = 0;
-                gd.gs.player.pos.x = WINDOW_WIDTH;
-            } else {
-                gd.gs.player.pos.x = -UNIT_SIZE;
-            }
+            gd.gs.player.pos.x = -UNIT_SIZE;
         } else if gd.gs.player.pos.x > WINDOW_WIDTH {
             gd.agd.current_stage += 1;
+            gd.agd.just_changed_stage = true;
             gd.agd.current_dialog = 0;
             gd.gs.player.pos.x = -UNIT_SIZE;
         }
@@ -120,15 +108,16 @@ impl Updatable for Player {
         }
 
         if gd.gs.player.moving {
-            if gd.gs.player.switch_frame_time >= MARCUS_ANIMATION_LENGTH / gd.gs.player.vx.abs() {
-                gd.gs.player.switch_frame_time = 0.0;
+            if gd.gs.player.switch_frame_timer >= MARCUS_ANIMATION_LENGTH / gd.gs.player.vx.abs() {
+                gd.gs.player.switch_frame_timer = 0.0;
                 gd.gs.player.current_frame = match gd.gs.player.current_frame {
-                    MarcusMovementFrame::Left => MarcusMovementFrame::Right,
-                    MarcusMovementFrame::Right => MarcusMovementFrame::Left,
+                    1 => 2,
+                    2 => 1,
+                    _ => 1, // not important
                 };
             }
 
-            gd.gs.player.switch_frame_time += gd.agd.dt;
+            gd.gs.player.switch_frame_timer += gd.agd.dt;
         }
     }
 }

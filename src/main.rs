@@ -4,6 +4,8 @@ mod level;
 mod scenes;
 mod sprite;
 
+use std::error::Error;
+
 use consts::*;
 use game_data::GameData;
 use macroquad::prelude::*;
@@ -19,22 +21,15 @@ fn window_conf() -> Conf {
     }
 }
 
-#[macroquad::main(window_conf)]
-async fn main() {
-    let mut gd = match GameData::new().await {
-        Ok(gd_) => gd_,
-        Err(e) => {
-            println!("An error occured while loading the game: {}", e);
-            return;
-        }
-    };
+async fn running() -> Result<(), Box<dyn Error>> {
+    let mut gd = GameData::new().await?;
 
     loop {
         match gd.agd.current_scene {
-            Scene::Playing => playing(&mut gd),
+            Scene::Playing => playing(&mut gd).await?,
             Scene::LevelCompleted => level_completed(&mut gd),
             Scene::MainMenu => main_menu(&mut gd),
-            Scene::Exit => return,
+            Scene::Exit => break,
         }
 
         if is_key_pressed(KeyCode::C) {
@@ -50,5 +45,17 @@ async fn main() {
         }
 
         next_frame().await;
+    }
+
+    Ok(())
+}
+
+#[macroquad::main(window_conf)]
+async fn main() {
+    match running().await {
+        Ok(_) => (),
+        Err(e) => {
+            println!("{}", e);
+        }
     }
 }
