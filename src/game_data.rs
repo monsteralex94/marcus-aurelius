@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::level::LevelGroupData;
+use crate::level::{LevelGroupData, boss_data::BossData};
 use crate::scenes::Scene;
 use crate::sprite::{
     Background, Boss, Labels, Player,
@@ -97,6 +97,10 @@ impl GameData {
         self.agd.current_stage >= self.lgd.levels[self.agd.current_level].num_stages
     }
 
+    pub fn game_completed(&self) -> bool {
+        self.agd.current_level >= self.lgd.num_levels
+    }
+
     pub fn get_dialog_len(&self) -> usize {
         if self.agd.current_level >= self.lgd.levels.len() {
             return 0;
@@ -119,5 +123,13 @@ impl GameData {
         } else {
             return "";
         }
+    }
+
+    pub fn current_level_name(&self) -> &str {
+        self.lgd.levels[self.agd.current_level].name.as_str()
+    }
+
+    pub fn current_boss_data(&self) -> &Option<BossData> {
+        &self.lgd.levels[self.agd.current_level].boss_data[self.agd.current_stage]
     }
 }

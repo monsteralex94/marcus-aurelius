@@ -36,7 +36,14 @@ pub struct BossActionSet {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct Size {
+    pub width: f32,
+    pub height: f32,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct BossData {
     pub texture_name: String,
+    pub boss_size: Size,
     pub action_set: BossActionSet,
 }

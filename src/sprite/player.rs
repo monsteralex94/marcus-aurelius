@@ -94,7 +94,7 @@ impl Updatable for Player {
         gd.gs.player.pos.x += MARCUS_X_SPEED_MUL * gd.gs.player.vx * gd.agd.dt;
 
         if gd.agd.controls_on && is_key_down(KeyCode::W) {
-            if gd.gs.player.pos.y == GROUND {
+            if gd.gs.player.pos.y == GROUND - UNIT_SIZE {
                 gd.gs.player.vy -= MARCUS_JUMP_POWER;
             }
         }
@@ -102,8 +102,8 @@ impl Updatable for Player {
         gd.gs.player.pos.y += MARCUS_Y_SPEED_MUL * gd.gs.player.vy * gd.agd.dt;
         gd.gs.player.vy += GRAVITY_CONSTANT * gd.agd.dt;
 
-        if gd.gs.player.pos.y > GROUND {
-            gd.gs.player.pos.y = GROUND;
+        if gd.gs.player.pos.y > GROUND - UNIT_SIZE {
+            gd.gs.player.pos.y = GROUND - UNIT_SIZE;
             gd.gs.player.vy = 0.0;
         }
 

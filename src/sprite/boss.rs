@@ -48,7 +48,10 @@ impl Boss {
             ],
             current_frame: 0,
             switch_frame_timer: 0.0,
-            pos: vec2(WINDOW_WIDTH - UNIT_SIZE, GROUND),
+            pos: vec2(
+                WINDOW_WIDTH - boss_data.boss_size.width,
+                GROUND - boss_data.boss_size.height,
+            ),
             moving: false,
             facing_left: true,
             health: 1.0,
@@ -69,13 +72,18 @@ impl Drawable for Boss {
             None => return,
         };
 
+        let boss_data = match gd.current_boss_data() {
+            Some(d) => d,
+            None => return,
+        };
+
         draw_texture_ex(
             &boss.texture,
             boss.pos.x,
             boss.pos.y,
             WHITE,
             DrawTextureParams {
-                dest_size: Some(vec2(UNIT_SIZE, UNIT_SIZE)), // adapt when larger boss
+                dest_size: Some(vec2(boss_data.boss_size.width, boss_data.boss_size.height)),
                 flip_x: boss.facing_left,
                 source: Some(match boss.moving {
                     true => boss.frames[boss.current_frame],
