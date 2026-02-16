@@ -1,5 +1,7 @@
+use gilrs::Gilrs;
 use std::error::Error;
 
+use crate::controls::GameInput;
 use crate::level::{LevelGroupData, boss_data::BossData};
 use crate::scenes::Scene;
 use crate::sprite::{
@@ -14,8 +16,9 @@ pub struct ActiveGameData {
     pub current_level: usize,
     pub current_stage: usize,
     pub current_dialog: usize,
-    pub controls_on: bool,
+    pub movement_on: bool,
     pub just_changed_stage: bool,
+    pub controls: GameInput,
     pub dt: f32,
 }
 
@@ -26,8 +29,9 @@ impl ActiveGameData {
             current_level: 0,
             current_stage: 0,
             current_dialog: 0,
-            controls_on: true,
+            movement_on: true,
             just_changed_stage: true,
+            controls: GameInput::Keyboard,
             dt: 0.0,
         }
     }
@@ -37,7 +41,7 @@ impl ActiveGameData {
         self.current_level = current_level;
         self.current_stage = 0;
         self.current_dialog = 0;
-        self.controls_on = true;
+        self.movement_on = true;
         self.just_changed_stage = true;
     }
 }
@@ -53,8 +57,8 @@ pub struct GameSprites {
 impl Updatable for GameSprites {
     fn update(gd: &mut GameData) {
         Background::update(gd);
-        Player::update(gd);
         Boss::update(gd);
+        Player::update(gd);
         Labels::update(gd);
     }
 }
@@ -62,14 +66,15 @@ impl Updatable for GameSprites {
 impl Drawable for GameSprites {
     fn draw(gd: &GameData) {
         Background::draw(gd);
-        Player::draw(gd);
         Boss::draw(gd);
+        Player::draw(gd);
         Labels::draw(gd);
     }
 }
 
 #[derive(Debug)]
 pub struct GameData {
+    pub girls: Gilrs,
     pub agd: ActiveGameData,
     pub lgd: LevelGroupData,
     pub gs: GameSprites,
@@ -82,6 +87,7 @@ impl GameData {
         let lgd_2 = LevelGroupData::new("assets/levels")?;
 
         Ok(GameData {
+            girls: Gilrs::new()?,
             agd: ActiveGameData::new(),
             lgd: lgd_1,
             gs: GameSprites {
@@ -91,6 +97,12 @@ impl GameData {
                 labels: Labels::new(),
             },
         })
+    }
+
+    pub fn reset(&mut self, current_level: usize) {
+        self.agd.reset(current_level);
+        self.gs.player.going_left = false;
+        self.gs.player.going_right = false;
     }
 
     pub fn level_completed(&self) -> bool {

@@ -1,11 +1,14 @@
 use std::error::Error;
 
+use crate::controls::main_controls;
 use crate::game_data::{GameData, GameSprites};
 use crate::sprite::{
     Boss,
     labels::text::*,
     traits::{Drawable, Updatable},
 };
+
+use gilrs::{Button, EventType};
 use macroquad::prelude::*;
 
 #[derive(Debug)]
@@ -17,6 +20,7 @@ pub enum Scene {
 }
 
 pub async fn playing(gd: &mut GameData) -> Result<(), Box<dyn Error>> {
+    main_controls(gd);
     GameSprites::update(gd);
 
     if gd.game_completed() {
@@ -35,7 +39,7 @@ pub async fn playing(gd: &mut GameData) -> Result<(), Box<dyn Error>> {
     }
 
     gd.agd.just_changed_stage = false;
-    gd.agd.controls_on = !gd.in_dialog();
+    gd.agd.movement_on = !gd.in_dialog();
     gd.agd.dt = get_frame_time();
 
     clear_background(GREEN);
@@ -46,8 +50,18 @@ pub async fn playing(gd: &mut GameData) -> Result<(), Box<dyn Error>> {
 
 pub fn level_completed(gd: &mut GameData) {
     if is_mouse_button_pressed(MouseButton::Left) {
-        gd.agd.reset(gd.agd.current_level + 1);
+        gd.reset(gd.agd.current_level + 1);
         return;
+    }
+
+    while let Some(ev) = gd.girls.next_event() {
+        match ev.event {
+            EventType::ButtonPressed(Button::East, _) => {
+                gd.reset(gd.agd.current_level + 1);
+                return;
+            }
+            _ => (),
+        }
     }
 
     clear_background(GREEN);
@@ -60,24 +74,32 @@ pub fn level_completed(gd: &mut GameData) {
 
     let x = get_centered_text_x(text.as_str(), 30.0);
     draw_text(text.as_str(), x, 300.0, 30.0, BLACK);
-
-    draw_text(
-        "Bitte klicke auf den Bildschirm um fortzufahren",
-        194.375,
-        400.0,
-        20.0,
-        BLACK,
-    );
 }
 
 pub fn main_menu(gd: &mut GameData) {
     if is_mouse_button_pressed(MouseButton::Left) {
-        gd.agd.reset(0);
+        gd.reset(0);
         return;
+    }
+
+    while let Some(ev) = gd.girls.next_event() {
+        match ev.event {
+            EventType::ButtonPressed(Button::East, _) => {
+                gd.reset(0);
+                return;
+            }
+            _ => (),
+        }
     }
 
     clear_background(GREEN);
     draw_text("MARCUS AURELIUS!", 80.0, 300.0, 40.0, BLACK);
-    draw_text(format!("{}", gd.agd.dt).as_str(), 100.0, 400.0, 20.0, BLACK);
+    draw_text(
+        format!("{}", get_frame_time()).as_str(),
+        100.0,
+        400.0,
+        20.0,
+        BLACK,
+    );
     draw_text("WIP", 100.0, 450.0, 20.0, BLACK);
 }

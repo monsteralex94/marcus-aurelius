@@ -13,7 +13,9 @@ pub struct Player {
     pub current_frame: usize,
     pub switch_frame_timer: f32,
     pub pos: Vec2,
-    pub moving: bool,
+    pub going_left: bool,
+    pub going_right: bool,
+    pub jumping: bool,
     pub facing_left: bool,
     pub vx: f32,
     pub vy: f32,
@@ -35,17 +37,48 @@ impl Player {
             current_frame: 0,
             switch_frame_timer: 0.0,
             pos: vec2(0.0, GROUND),
-            moving: false,
+            going_left: false,
+            going_right: false,
+            jumping: false,
             facing_left: false,
             vx: 0.0,
             vy: 0.0,
             health: 1.0,
         })
     }
-}
 
-impl Updatable for Player {
-    fn update(gd: &mut GameData) {
+    // Controls
+    pub fn left(gd: &mut GameData) {
+        if gd.gs.player.vx > -MARCUS_X_MAX_SPEED {
+            gd.gs.player.vx -= MARCUS_X_ACCELERATION;
+        } else {
+            gd.gs.player.vx = -MARCUS_X_MAX_SPEED;
+        }
+
+        gd.gs.player.facing_left = true;
+    }
+
+    pub fn right(gd: &mut GameData) {
+        if gd.gs.player.vx < MARCUS_X_MAX_SPEED {
+            gd.gs.player.vx += MARCUS_X_ACCELERATION;
+        } else {
+            gd.gs.player.vx = MARCUS_X_MAX_SPEED;
+        }
+
+        gd.gs.player.facing_left = false;
+    }
+
+    pub fn up(gd: &mut GameData) {
+        if gd.gs.player.pos.y == GROUND - UNIT_SIZE {
+            gd.gs.player.vy -= MARCUS_JUMP_POWER;
+        }
+    }
+
+    pub fn moving(gd: &GameData) -> bool {
+        gd.gs.player.going_left || gd.gs.player.going_right
+    }
+
+    pub fn physics(gd: &mut GameData) {
         if gd.gs.player.pos.x < -UNIT_SIZE {
             gd.gs.player.pos.x = -UNIT_SIZE;
         } else if gd.gs.player.pos.x > WINDOW_WIDTH {
@@ -55,33 +88,17 @@ impl Updatable for Player {
             gd.gs.player.pos.x = -UNIT_SIZE;
         }
 
-        gd.gs.player.moving = false;
-
-        if gd.agd.controls_on {
-            if is_key_down(KeyCode::A) {
-                if gd.gs.player.vx > -MARCUS_X_MAX_SPEED {
-                    gd.gs.player.vx -= MARCUS_X_ACCELERATION;
-                } else {
-                    gd.gs.player.vx = -MARCUS_X_MAX_SPEED;
-                }
-
-                gd.gs.player.moving = true;
-                gd.gs.player.facing_left = true;
+        if gd.agd.movement_on {
+            if gd.gs.player.going_left {
+                Player::left(gd);
             }
 
-            if is_key_down(KeyCode::D) {
-                if gd.gs.player.vx < MARCUS_X_MAX_SPEED {
-                    gd.gs.player.vx += MARCUS_X_ACCELERATION;
-                } else {
-                    gd.gs.player.vx = MARCUS_X_MAX_SPEED;
-                }
-
-                gd.gs.player.moving = true;
-                gd.gs.player.facing_left = false;
+            if gd.gs.player.going_right {
+                Player::right(gd);
             }
         }
 
-        if !gd.gs.player.moving {
+        if !Player::moving(gd) {
             if gd.gs.player.vx < -MARCUS_X_DECELERATION / 2.0 {
                 gd.gs.player.vx += MARCUS_X_DECELERATION;
             } else if gd.gs.player.vx > MARCUS_X_DECELERATION / 2.0 {
@@ -93,10 +110,8 @@ impl Updatable for Player {
 
         gd.gs.player.pos.x += MARCUS_X_SPEED_MUL * gd.gs.player.vx * gd.agd.dt;
 
-        if gd.agd.controls_on && is_key_down(KeyCode::W) {
-            if gd.gs.player.pos.y == GROUND - UNIT_SIZE {
-                gd.gs.player.vy -= MARCUS_JUMP_POWER;
-            }
+        if gd.agd.movement_on && gd.gs.player.jumping {
+            Player::up(gd);
         }
 
         gd.gs.player.pos.y += MARCUS_Y_SPEED_MUL * gd.gs.player.vy * gd.agd.dt;
@@ -107,7 +122,7 @@ impl Updatable for Player {
             gd.gs.player.vy = 0.0;
         }
 
-        if gd.gs.player.moving {
+        if Player::moving(gd) {
             if gd.gs.player.switch_frame_timer >= MARCUS_ANIMATION_LENGTH / gd.gs.player.vx.abs() {
                 gd.gs.player.switch_frame_timer = 0.0;
                 gd.gs.player.current_frame = match gd.gs.player.current_frame {
@@ -122,6 +137,12 @@ impl Updatable for Player {
     }
 }
 
+impl Updatable for Player {
+    fn update(gd: &mut GameData) {
+        Player::physics(gd);
+    }
+}
+
 impl Drawable for Player {
     fn draw(gd: &GameData) {
         draw_texture_ex(
@@ -132,7 +153,7 @@ impl Drawable for Player {
             DrawTextureParams {
                 dest_size: Some(vec2(UNIT_SIZE, UNIT_SIZE)),
                 flip_x: gd.gs.player.facing_left,
-                source: Some(match gd.gs.player.moving {
+                source: Some(match Player::moving(gd) {
                     true => gd.gs.player.frames[gd.gs.player.current_frame as usize],
                     false => gd.gs.player.frames[0],
                 }),

@@ -1,15 +1,17 @@
 mod consts;
+mod controls;
 mod game_data;
 mod level;
 mod scenes;
 mod sprite;
 
-use std::error::Error;
-
 use consts::*;
+use controls::GameInput;
 use game_data::GameData;
-use macroquad::prelude::*;
 use scenes::*;
+
+use macroquad::prelude::*;
+use std::error::Error;
 
 fn window_conf() -> Conf {
     Conf {
@@ -42,6 +44,14 @@ async fn running() -> Result<(), Box<dyn Error>> {
 
         if is_key_pressed(KeyCode::G) {
             dbg!(&gd);
+        }
+
+        if is_key_pressed(KeyCode::I) {
+            gd.agd.controls = match &gd.agd.controls {
+                GameInput::Keyboard => GameInput::NormalGamepad,
+                GameInput::NormalGamepad => GameInput::CursedGamepad,
+                GameInput::CursedGamepad => GameInput::Keyboard,
+            }
         }
 
         next_frame().await;

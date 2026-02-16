@@ -4,6 +4,7 @@ use crate::sprite::{
     labels::text::*,
     traits::{Drawable, Updatable},
 };
+
 use macroquad::prelude::*;
 
 #[derive(Debug)]
@@ -12,6 +13,7 @@ pub struct DialogLabel {
     pub letters_num: usize,
     pub current_letters: usize,
     pub letter_timer: f32,
+    pub next: bool,
 }
 
 impl DialogLabel {
@@ -21,6 +23,7 @@ impl DialogLabel {
             letters_num: 0,
             current_letters: 0,
             letter_timer: 0.0,
+            next: false,
         }
     }
 
@@ -50,9 +53,10 @@ impl DialogLabel {
 impl Updatable for DialogLabel {
     fn update(gd: &mut GameData) {
         if gd.in_dialog() {
-            if is_key_pressed(KeyCode::N) {
+            if gd.gs.labels.dialog.next {
                 gd.agd.current_dialog += 1;
                 gd.gs.labels.dialog.reset();
+                gd.gs.labels.dialog.next = false;
             }
 
             if gd.gs.labels.dialog.current_letters < gd.gs.labels.dialog.letters_num
