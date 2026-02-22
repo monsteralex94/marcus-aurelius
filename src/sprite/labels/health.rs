@@ -43,10 +43,10 @@ impl Drawable for PlayerHealthLabel {
 
         draw_text_outline(
             gd.gs.labels.player_health.text.as_str(),
-            50.0,
-            70.0,
-            70.0,
-            3.0,
+            WINDOW_WIDTH * 0.05,
+            WINDOW_WIDTH / 14.0,
+            WINDOW_WIDTH / 14.0,
+            WINDOW_WIDTH / 200.0,
             gd.gs.labels.player_health.color,
             WHITE,
         );
@@ -90,10 +90,10 @@ impl Drawable for BossHealthLabel {
 
         draw_text_outline(
             gd.gs.labels.boss_health.text.as_str(),
-            WINDOW_WIDTH - 260.0,
-            70.0,
-            70.0,
-            3.0,
+            WINDOW_WIDTH * 0.75,
+            WINDOW_WIDTH / 14.0,
+            WINDOW_WIDTH / 14.0,
+            WINDOW_WIDTH / 200.0,
             gd.gs.labels.boss_health.color,
             WHITE,
         );

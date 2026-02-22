@@ -1,4 +1,4 @@
-pub const WINDOW_HEIGHT: f32 = 600.0;
+pub const WINDOW_HEIGHT: f32 = 900.0;
 pub const WINDOW_WIDTH: f32 = WINDOW_HEIGHT * 4.0 / 3.0;
 pub const UNIT: f32 = WINDOW_HEIGHT / 10.0;
 pub const GROUND: f32 = WINDOW_HEIGHT - UNIT;

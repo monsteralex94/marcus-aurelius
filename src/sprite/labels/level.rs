@@ -1,3 +1,4 @@
+use crate::consts::WINDOW_HEIGHT;
 use crate::game_data::GameData;
 use crate::sprite::{
     labels::text::*,
@@ -34,7 +35,14 @@ impl Updatable for LevelLabel {
 
 impl Drawable for LevelLabel {
     fn draw(gd: &GameData) {
-        let x = get_centered_text_x(gd.gs.labels.level.text.as_str(), 20.0);
-        draw_text(gd.gs.labels.level.text.as_str(), x, 20.0, 20.0, BLACK);
+        let font_size = WINDOW_HEIGHT / 30.0;
+        let x = get_centered_text_x(gd.gs.labels.level.text.as_str(), font_size);
+        draw_text(
+            gd.gs.labels.level.text.as_str(),
+            x,
+            font_size,
+            font_size,
+            BLACK,
+        );
     }
 }
