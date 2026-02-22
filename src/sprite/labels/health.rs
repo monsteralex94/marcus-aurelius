@@ -1,3 +1,4 @@
+use crate::consts::WINDOW_WIDTH;
 use crate::game_data::GameData;
 use crate::sprite::{
     labels::text::*,
@@ -89,7 +90,7 @@ impl Drawable for BossHealthLabel {
 
         draw_text_outline(
             gd.gs.labels.boss_health.text.as_str(),
-            540.0,
+            WINDOW_WIDTH - 260.0,
             70.0,
             70.0,
             3.0,

@@ -101,8 +101,7 @@ impl GameData {
 
     pub fn reset(&mut self, current_level: usize) {
         self.agd.reset(current_level);
-        self.gs.player.going_left = false;
-        self.gs.player.going_right = false;
+        Player::stop_movement(self);
     }
 
     pub fn level_completed(&self) -> bool {

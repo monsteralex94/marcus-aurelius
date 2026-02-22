@@ -42,7 +42,7 @@ pub async fn playing(gd: &mut GameData) -> Result<(), Box<dyn Error>> {
     gd.agd.movement_on = !gd.in_dialog();
     gd.agd.dt = get_frame_time();
 
-    clear_background(GREEN);
+    // clear_background(GREEN);
     GameSprites::draw(gd);
 
     Ok(())

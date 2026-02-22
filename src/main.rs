@@ -51,7 +51,9 @@ async fn running() -> Result<(), Box<dyn Error>> {
                 GameInput::Keyboard => GameInput::NormalGamepad,
                 GameInput::NormalGamepad => GameInput::CursedGamepad,
                 GameInput::CursedGamepad => GameInput::Keyboard,
-            }
+            };
+
+            dbg!(&gd.agd.controls);
         }
 
         next_frame().await;

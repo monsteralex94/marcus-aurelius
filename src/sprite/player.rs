@@ -1,4 +1,3 @@
-use crate::consts::marcus::*;
 use crate::consts::*;
 use crate::game_data::GameData;
 use crate::sprite::traits::*;
@@ -49,28 +48,28 @@ impl Player {
 
     // Controls
     pub fn left(gd: &mut GameData) {
-        if gd.gs.player.vx > -MARCUS_X_MAX_SPEED {
-            gd.gs.player.vx -= MARCUS_X_ACCELERATION;
+        if gd.gs.player.vx > -player::MAX_SPEED {
+            gd.gs.player.vx -= player::ACCELERATION;
         } else {
-            gd.gs.player.vx = -MARCUS_X_MAX_SPEED;
+            gd.gs.player.vx = -player::MAX_SPEED;
         }
 
         gd.gs.player.facing_left = true;
     }
 
     pub fn right(gd: &mut GameData) {
-        if gd.gs.player.vx < MARCUS_X_MAX_SPEED {
-            gd.gs.player.vx += MARCUS_X_ACCELERATION;
+        if gd.gs.player.vx < player::MAX_SPEED {
+            gd.gs.player.vx += player::ACCELERATION;
         } else {
-            gd.gs.player.vx = MARCUS_X_MAX_SPEED;
+            gd.gs.player.vx = player::MAX_SPEED;
         }
 
         gd.gs.player.facing_left = false;
     }
 
     pub fn up(gd: &mut GameData) {
-        if gd.gs.player.pos.y == GROUND - UNIT_SIZE {
-            gd.gs.player.vy -= MARCUS_JUMP_POWER;
+        if gd.gs.player.pos.y == GROUND - UNIT {
+            gd.gs.player.vy -= (2.0 * player::GRAVITY * player::JUMP_HEIGHT).sqrt();
         }
     }
 
@@ -78,14 +77,19 @@ impl Player {
         gd.gs.player.going_left || gd.gs.player.going_right
     }
 
+    pub fn stop_movement(gd: &mut GameData) {
+        gd.gs.player.going_left = false;
+        gd.gs.player.going_right = false;
+    }
+
     pub fn physics(gd: &mut GameData) {
-        if gd.gs.player.pos.x < -UNIT_SIZE {
-            gd.gs.player.pos.x = -UNIT_SIZE;
+        if gd.gs.player.pos.x < -UNIT {
+            gd.gs.player.pos.x = -UNIT;
         } else if gd.gs.player.pos.x > WINDOW_WIDTH {
             gd.agd.current_stage += 1;
             gd.agd.just_changed_stage = true;
             gd.agd.current_dialog = 0;
-            gd.gs.player.pos.x = -UNIT_SIZE;
+            gd.gs.player.pos.x = -UNIT;
         }
 
         if gd.agd.movement_on {
@@ -99,31 +103,31 @@ impl Player {
         }
 
         if !Player::moving(gd) {
-            if gd.gs.player.vx < -MARCUS_X_DECELERATION / 2.0 {
-                gd.gs.player.vx += MARCUS_X_DECELERATION;
-            } else if gd.gs.player.vx > MARCUS_X_DECELERATION / 2.0 {
-                gd.gs.player.vx -= MARCUS_X_DECELERATION;
+            if gd.gs.player.vx < -player::DECELERATION / 2.0 {
+                gd.gs.player.vx += player::DECELERATION;
+            } else if gd.gs.player.vx > player::DECELERATION / 2.0 {
+                gd.gs.player.vx -= player::DECELERATION;
             } else {
                 gd.gs.player.vx = 0.0;
             }
         }
 
-        gd.gs.player.pos.x += MARCUS_X_SPEED_MUL * gd.gs.player.vx * gd.agd.dt;
+        gd.gs.player.pos.x += gd.gs.player.vx * gd.agd.dt;
 
         if gd.agd.movement_on && gd.gs.player.jumping {
             Player::up(gd);
         }
 
-        gd.gs.player.pos.y += MARCUS_Y_SPEED_MUL * gd.gs.player.vy * gd.agd.dt;
-        gd.gs.player.vy += GRAVITY_CONSTANT * gd.agd.dt;
+        gd.gs.player.pos.y += gd.gs.player.vy * gd.agd.dt;
+        gd.gs.player.vy += player::GRAVITY * gd.agd.dt;
 
-        if gd.gs.player.pos.y > GROUND - UNIT_SIZE {
-            gd.gs.player.pos.y = GROUND - UNIT_SIZE;
+        if gd.gs.player.pos.y > GROUND - UNIT {
+            gd.gs.player.pos.y = GROUND - UNIT;
             gd.gs.player.vy = 0.0;
         }
 
         if Player::moving(gd) {
-            if gd.gs.player.switch_frame_timer >= MARCUS_ANIMATION_LENGTH / gd.gs.player.vx.abs() {
+            if gd.gs.player.switch_frame_timer >= player::ANIMATION_LENGTH / gd.gs.player.vx.abs() {
                 gd.gs.player.switch_frame_timer = 0.0;
                 gd.gs.player.current_frame = match gd.gs.player.current_frame {
                     1 => 2,
@@ -151,7 +155,7 @@ impl Drawable for Player {
             gd.gs.player.pos.y,
             WHITE,
             DrawTextureParams {
-                dest_size: Some(vec2(UNIT_SIZE, UNIT_SIZE)),
+                dest_size: Some(vec2(UNIT, UNIT)),
                 flip_x: gd.gs.player.facing_left,
                 source: Some(match Player::moving(gd) {
                     true => gd.gs.player.frames[gd.gs.player.current_frame as usize],

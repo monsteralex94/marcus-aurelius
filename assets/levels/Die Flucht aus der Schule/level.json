@@ -4,7 +4,7 @@
   [["[Madame Andeatea bossfight]"], ["[Ebert Strebert bossfight]"]],
   [true, true],
   [
-    ["placeholder.png", [120.0, 120.0], [[], [], []]],
-    ["placeholder.png", [60.0, 60.0], [[], [], []]]
+    ["placeholder.png", [2.0, 2.0], [[], [], []]],
+    ["placeholder.png", [1.0, 1.0], [[], [], []]]
   ]
 ]

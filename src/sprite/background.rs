@@ -1,3 +1,4 @@
+use crate::consts::{WINDOW_HEIGHT, WINDOW_WIDTH};
 use crate::game_data::GameData;
 use crate::level::LevelGroupData;
 use crate::sprite::traits::{Drawable, Updatable};
@@ -60,13 +61,17 @@ impl Updatable for Background {
 
 impl Drawable for Background {
     fn draw(gd: &GameData) {
-        draw_texture(
+        draw_texture_ex(
             &gd.gs.background.backgrounds[gd.gs.background.current_level]
                 [gd.gs.background.current_stage]
                 .texture,
             0.0,
             0.0,
             WHITE,
+            DrawTextureParams {
+                dest_size: Some(vec2(WINDOW_WIDTH, WINDOW_HEIGHT)),
+                ..Default::default()
+            },
         );
     }
 }

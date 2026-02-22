@@ -11,7 +11,7 @@ pub struct Boss {
     pub texture: Texture2D,
     pub frames: Vec<Rect>,
     pub current_frame: usize,
-    pub switch_frame_timer: f32,
+    // pub switch_frame_timer: f32,
     pub pos: Vec2,
     pub moving: bool,
     pub facing_left: bool,
@@ -47,10 +47,10 @@ impl Boss {
                 Rect::new(0.0, 32.0, 32.0, 32.0),
             ],
             current_frame: 0,
-            switch_frame_timer: 0.0,
+            // switch_frame_timer: 0.0,
             pos: vec2(
-                WINDOW_WIDTH - boss_data.boss_size.width,
-                GROUND - boss_data.boss_size.height,
+                WINDOW_WIDTH - boss_data.boss_size.width * UNIT,
+                GROUND - boss_data.boss_size.height * UNIT,
             ),
             moving: false,
             facing_left: true,
@@ -60,7 +60,7 @@ impl Boss {
 }
 
 impl Updatable for Boss {
-    fn update(gd: &mut GameData) {
+    fn update(_gd: &mut GameData) {
         // update the boss (with BossActionsData)
     }
 }
@@ -83,7 +83,10 @@ impl Drawable for Boss {
             boss.pos.y,
             WHITE,
             DrawTextureParams {
-                dest_size: Some(vec2(boss_data.boss_size.width, boss_data.boss_size.height)),
+                dest_size: Some(vec2(
+                    boss_data.boss_size.width * UNIT,
+                    boss_data.boss_size.height * UNIT,
+                )),
                 flip_x: boss.facing_left,
                 source: Some(match boss.moving {
                     true => boss.frames[boss.current_frame],
